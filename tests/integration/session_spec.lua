@@ -2246,9 +2246,6 @@ describe("session", function()
 				{2:-- INSERT --recording @a}                          |]],
 		})
 		feed("cc<Esc>Gqo<Esc>@a")
-		-- this is not entirely correct!!
-		-- The autocommand that updated the docstring ("cc") of the original
-		-- snippet is disabled in the replayed snippet because.
 		screen:expect({
 			grid = [[
 				/**                                               |
@@ -2267,7 +2264,7 @@ describe("session", function()
 				 *                                                |
 				 * @return                                        |
 				 *                                                |
-				 * @throws                                        |
+				 * @throws cc                                     |
 				 */                                               |
 				private aa bb() {4:●}                                 |
 				 throws cc {                                      |
