@@ -122,7 +122,7 @@ function M.multiline_substr(str, from, to)
 
 	-- include all rows
 	for i = from[1], to[1] do
-		table.insert(res, str[i+1])
+		table.insert(res, str[i + 1])
 	end
 
 	-- trim text before from and after to.
@@ -130,7 +130,7 @@ function M.multiline_substr(str, from, to)
 	-- on the same line. If res[1] was trimmed first, we'd have to adjust the
 	-- trim-point of `to`.
 	res[#res] = res[#res]:sub(1, to[2])
-	res[1] = res[1]:sub(from[2]+1)
+	res[1] = res[1]:sub(from[2] + 1)
 
 	return res
 end

@@ -185,10 +185,7 @@ end
 
 local function linkable_node(node)
 	-- node.type has to be one of insertNode, exitNode.
-	return vim.tbl_contains(
-		{ types.insertNode, types.exitNode },
-		node.type
-	)
+	return vim.tbl_contains({ types.insertNode, types.exitNode }, node.type)
 end
 
 -- mainly used internally, by binarysearch_pos.
@@ -198,10 +195,7 @@ end
 -- feel appropriate (higher runtime), most cases should be served well by this
 -- heuristic.
 local function non_linkable_node(node)
-	return vim.tbl_contains(
-		{ types.textNode, types.functionNode },
-		node.type
-	)
+	return vim.tbl_contains({ types.textNode, types.functionNode }, node.type)
 end
 -- return whether a node is certainly (not) interactive.
 -- Coincindentially, the same nodes as (non-)linkable ones, but since there is a
@@ -857,9 +851,11 @@ local function collect_dependents(node, which, static)
 end
 
 local function str_args(args)
-	return args and vim.tbl_map(function(arg)
-		return snippet_string.isinstance(arg) and vim.split(arg:str(), "\n") or arg
-	end, args)
+	return args
+		and vim.tbl_map(function(arg)
+			return snippet_string.isinstance(arg) and vim.split(arg:str(), "\n")
+				or arg
+		end, args)
 end
 
 local store_id = 0
@@ -891,7 +887,8 @@ local function store_cursor_node_relative(node)
 		snip_data.mode = cursor_state.mode
 
 		if cursor_state.pos_v then
-			snip_data.selection_end_start_relative = util.pos_offset(node.mark:get_endpoint(-1), cursor_state.pos_v)
+			snip_data.selection_end_start_relative =
+				util.pos_offset(node.mark:get_endpoint(-1), cursor_state.pos_v)
 		end
 
 		data[snip] = snip_data
@@ -904,14 +901,30 @@ end
 
 local function restore_cursor_pos_relative(node, data)
 	if data.mode == "i" then
-		feedkeys.insert_at(util.pos_from_offset(node.mark:get_endpoint(-1), data.cursor_start_relative))
+		feedkeys.insert_at(
+			util.pos_from_offset(
+				node.mark:get_endpoint(-1),
+				data.cursor_start_relative
+			)
+		)
 	elseif data.mode == "s" then
 		-- is a selection => restore it.
-		local selection_from = util.pos_from_offset(node.mark:get_endpoint(-1), data.cursor_start_relative)
-		local selection_to = util.pos_from_offset(node.mark:get_endpoint(-1), data.selection_end_start_relative)
+		local selection_from = util.pos_from_offset(
+			node.mark:get_endpoint(-1),
+			data.cursor_start_relative
+		)
+		local selection_to = util.pos_from_offset(
+			node.mark:get_endpoint(-1),
+			data.selection_end_start_relative
+		)
 		feedkeys.select_range(selection_from, selection_to)
 	else
-		feedkeys.move_to_normal(util.pos_from_offset(node.mark:get_endpoint(-1), data.cursor_start_relative))
+		feedkeys.move_to_normal(
+			util.pos_from_offset(
+				node.mark:get_endpoint(-1),
+				data.cursor_start_relative
+			)
+		)
 	end
 end
 
@@ -942,5 +955,5 @@ return {
 	node_subtree_do = node_subtree_do,
 	str_args = str_args,
 	store_cursor_node_relative = store_cursor_node_relative,
-	restore_cursor_pos_relative = restore_cursor_pos_relative
+	restore_cursor_pos_relative = restore_cursor_pos_relative,
 }

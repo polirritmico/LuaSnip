@@ -9,7 +9,7 @@ local function set_choice_callback(data)
 		end
 		-- feed+immediately execute i to enter INSERT after vim.ui.input closes.
 		-- vim.api.nvim_feedkeys("i", "x", false)
-		ls.set_choice(indx, {cursor_restore_data = data})
+		ls.set_choice(indx, { cursor_restore_data = data })
 	end
 end
 

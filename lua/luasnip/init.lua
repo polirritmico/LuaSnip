@@ -31,7 +31,6 @@ local function no_region_check_wrap(fn, ...)
 	return fn_res
 end
 
-
 local function get_active_snip()
 	local node = session.current_nodes[vim.api.nvim_get_current_buf()]
 	if not node then
@@ -153,7 +152,7 @@ local function get_corresponding_node(parent, data)
 	return parent:find_node(function(test_node)
 		return (test_node.store_id == data.store_id)
 			or (data.key ~= nil and test_node.key == data.key)
-	end, {find_in_child_snippets = true})
+	end, { find_in_child_snippets = true })
 end
 
 local function node_update_dependents_preserve_position(node, current, opts)
@@ -182,7 +181,10 @@ local function node_update_dependents_preserve_position(node, current, opts)
 		if not opts.no_move and opts.restore_position then
 			-- node is visible: restore position.
 			local active_snippet = current:get_snippet()
-			node_util.restore_cursor_pos_relative(current, restore_data[active_snippet])
+			node_util.restore_cursor_pos_relative(
+				current,
+				restore_data[active_snippet]
+			)
 		end
 
 		return { jump_done = false, new_current = current }
@@ -227,7 +229,10 @@ local function node_update_dependents_preserve_position(node, current, opts)
 
 			if not opts.no_move and opts.restore_position then
 				-- node is visible: restore position
-				node_util.restore_cursor_pos_relative(new_current, snip_restore_data)
+				node_util.restore_cursor_pos_relative(
+					new_current,
+					snip_restore_data
+				)
 			end
 
 			return { jump_done = false, new_current = new_current }
@@ -253,7 +258,8 @@ local function update_dependents(node)
 			{ no_move = false, restore_position = true }
 		)
 		upd_res.new_current:focus()
-		session.current_nodes[vim.api.nvim_get_current_buf()] = upd_res.new_current
+		session.current_nodes[vim.api.nvim_get_current_buf()] =
+			upd_res.new_current
 	end
 end
 local function active_update_dependents()
@@ -581,7 +587,8 @@ local function change_choice(val, opts)
 
 	-- if the active choice exists current_node still does.
 	local current_node = session.current_nodes[vim.api.nvim_get_current_buf()]
-	local restore_data = opts and opts.cursor_restore_data or node_util.store_cursor_node_relative(current_node)
+	local restore_data = opts and opts.cursor_restore_data
+		or node_util.store_cursor_node_relative(current_node)
 
 	local new_active = no_region_check_wrap(
 		safe_choice_action,
@@ -598,7 +605,8 @@ end
 
 local function set_choice(choice_indx, opts)
 	local current_node = session.current_nodes[vim.api.nvim_get_current_buf()]
-	local restore_data = opts and opts.cursor_restore_data or node_util.store_cursor_node_relative(current_node)
+	local restore_data = opts and opts.cursor_restore_data
+		or node_util.store_cursor_node_relative(current_node)
 
 	local active_choice =
 		session.active_choice_nodes[vim.api.nvim_get_current_buf()]
@@ -995,7 +1003,7 @@ ls = lazy_table({
 	extend_decorator = extend_decorator,
 	log = require("luasnip.util.log"),
 	activate_node = activate_node,
-	no_region_check_wrap = no_region_check_wrap
+	no_region_check_wrap = no_region_check_wrap,
 }, ls_lazy)
 
 return ls

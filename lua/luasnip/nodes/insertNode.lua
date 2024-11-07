@@ -343,7 +343,15 @@ function InsertNode:get_snippetstring()
 	local self_from, self_to = self.mark:pos_begin_end_raw()
 	-- only do one get_text, and establish relative offsets partition this
 	-- text.
-	local ok, text = pcall(vim.api.nvim_buf_get_text, 0, self_from[1], self_from[2], self_to[1], self_to[2], {})
+	local ok, text = pcall(
+		vim.api.nvim_buf_get_text,
+		0,
+		self_from[1],
+		self_from[2],
+		self_to[1],
+		self_to[2],
+		{}
+	)
 
 	local snippetstring = snippet_string.new()
 
@@ -353,17 +361,32 @@ function InsertNode:get_snippetstring()
 		return snippetstring
 	end
 
-	local current = {0,0}
+	local current = { 0, 0 }
 	for _, snip in ipairs(self:child_snippets()) do
 		local snip_from, snip_to = snip.mark:pos_begin_end_raw()
 		local snip_from_base_rel = util.pos_offset(self_from, snip_from)
-		local snip_to_base_rel   = util.pos_offset(self_from, snip_to)
+		local snip_to_base_rel = util.pos_offset(self_from, snip_to)
 
-		snippetstring:append_text(str_util.multiline_substr(text, current, snip_from_base_rel))
-		snippetstring:append_snip(snip, str_util.multiline_substr(text, snip_from_base_rel, snip_to_base_rel))
+		snippetstring:append_text(
+			str_util.multiline_substr(text, current, snip_from_base_rel)
+		)
+		snippetstring:append_snip(
+			snip,
+			str_util.multiline_substr(
+				text,
+				snip_from_base_rel,
+				snip_to_base_rel
+			)
+		)
 		current = snip_to_base_rel
 	end
-	snippetstring:append_text(str_util.multiline_substr(text, current, util.pos_offset(self_from, self_to)))
+	snippetstring:append_text(
+		str_util.multiline_substr(
+			text,
+			current,
+			util.pos_offset(self_from, self_to)
+		)
+	)
 
 	return snippetstring
 end
@@ -397,12 +420,18 @@ function InsertNode:put_initial(pos)
 		-- index.
 		true,
 		-- don't enter snippets, we want to find the position of this node.
-		node_util.binarysearch_preference.outside)
+		node_util.binarysearch_preference.outside
+	)
 
 	for snip in self.static_text:iter_snippets() do
 		-- don't have to pass a current_node, we don't need it since we can
 		-- certainly link the snippet into this insertNode.
-		snip:insert_into_jumplist(nil, self, self.parent.snippet.child_snippets, child_snippet_idx)
+		snip:insert_into_jumplist(
+			nil,
+			self,
+			self.parent.snippet.child_snippets,
+			child_snippet_idx
+		)
 
 		child_snippet_idx = child_snippet_idx + 1
 	end

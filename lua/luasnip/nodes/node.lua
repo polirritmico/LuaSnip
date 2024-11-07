@@ -255,7 +255,13 @@ local function get_args(node, get_text_func_name, static)
 		-- * we are doing a static update and it is not static_visible or
 		--   visible (this second condition is to allow the docstring-generation
 		--   to be improved by data provided after the expansion)
-		if argnode and ((static and (argnode.static_visible or argnode.visible)) or (not static and argnode.visible)) then
+		if
+			argnode
+			and (
+				(static and (argnode.static_visible or argnode.visible))
+				or (not static and argnode.visible)
+			)
+		then
 			if not static then
 				-- Don't store (aka call get_snippetstring) if this is a static
 				-- update (there will be no associated buffer-region!) and
@@ -576,17 +582,12 @@ end
 
 function Node:linkable()
 	-- linkable if insert or exitNode.
-	return vim.tbl_contains(
-		{ types.insertNode, types.exitNode },
-		self.type
-	)
+	return vim.tbl_contains({ types.insertNode, types.exitNode }, self.type)
 end
 function Node:interactive()
 	-- interactive if immediately inside choiceNode.
-	return vim.tbl_contains(
-		{ types.insertNode, types.exitNode },
-		self.type
-	) or self.choice ~= nil
+	return vim.tbl_contains({ types.insertNode, types.exitNode }, self.type)
+		or self.choice ~= nil
 end
 function Node:leaf()
 	return vim.tbl_contains(

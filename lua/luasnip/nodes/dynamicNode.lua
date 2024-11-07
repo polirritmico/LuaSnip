@@ -168,7 +168,12 @@ function DynamicNode:update()
 			tmp = SnippetNode(nil, {})
 		else
 			-- also enter node here.
-			tmp = self.fn(effective_args, self.parent, nil, unpack(self.user_args))
+			tmp = self.fn(
+				effective_args,
+				self.parent,
+				nil,
+				unpack(self.user_args)
+			)
 		end
 	end
 
@@ -270,8 +275,13 @@ function DynamicNode:update_static()
 			tmp = SnippetNode(nil, {})
 		else
 			-- also enter node here.
-			ok, tmp =
-				pcall(self.fn, effective_args, self.parent, nil, unpack(self.user_args))
+			ok, tmp = pcall(
+				self.fn,
+				effective_args,
+				self.parent,
+				nil,
+				unpack(self.user_args)
+			)
 		end
 	end
 	if not ok then
@@ -323,7 +333,11 @@ function DynamicNode:update_static()
 
 	tmp:update_static()
 	-- updates own dependents.
-	self:update_dependents_static({ own = true, parents = true, children = true })
+	self:update_dependents_static({
+		own = true,
+		parents = true,
+		children = true,
+	})
 end
 
 function DynamicNode:exit()
@@ -358,7 +372,11 @@ function DynamicNode:update_restore()
 	local str_args = node_util.str_args(args)
 
 	-- only insert snip if it is not currently visible!
-	if self.snip and not self.snip.visible and vim.deep_equal(str_args, self.last_args) then
+	if
+		self.snip
+		and not self.snip.visible
+		and vim.deep_equal(str_args, self.last_args)
+	then
 		local tmp = self.snip
 
 		-- position might (will probably!!) still have changed, so update it
